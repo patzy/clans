@@ -1,0 +1,12 @@
+;;;; -*- Mode: Lisp; Syntax: ANSI-Common-Lisp; Base: 10; indent-tabs-mode: nil -*-
+;; Clans assets declaration
+((:font :name "font" :file "StoneHinge.fnt")
+ (:font :name "score-font" :alias "font")
+ (:font :name "title-font" :alias "font")
+ (:font :name "player-font" :alias "font")
+ (:font :name "hut-font" :file "dejavu-sans-bold.fnt")
+ (:texture :name "map-tex" :file "board.png")
+ (:texture :name "hut-tex" :file "hut.png")
+ (:image :name "map-picking" :file "board_picking.png"))
+
+
