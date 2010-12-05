@@ -4,6 +4,7 @@
 
 (defun init ()
   ;;(cl-i18n:load-language #P"data/lang/en")
+  (glaw:init-sound)
   (glaw:clear-input-handlers)
   (glaw:init-content-manager :config #P"clans.assets")
   (glaw:load-asset "font")
@@ -11,6 +12,7 @@
   (glaw:push-screen (make-instance 'title-screen) *screens*))
 
 (defun shutdown ()
+  (glaw:shutdown-sound)
   (glaw:pop-screen *screens*)
   (glaw:dispose-asset "font")
   (glaw:shutdown-content-manager))
@@ -23,6 +25,7 @@
 
 (defun update (dt)
   (glaw:update-scheduler dt)
+  (glaw:update-sound)
   (glaw:update-screens *screens* dt))
 
 ;; App skeleton

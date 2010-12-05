@@ -49,8 +49,13 @@
 (defun game-move-huts (from-ter to-ter)
   (if (game-move-possible-p from-ter to-ter)
       (prog1 t
+        (glaw:with-resources ((snd "move-ok"))
+          (glaw:play-sound snd))
         (map-move-huts from-ter to-ter))
-      (format t "Move is *not* possible, try something else~%")))
+      (prog1 nil
+        (glaw:with-resources ((snd "move-error"))
+          (glaw:play-sound snd))
+        (format t "Move is *not* possible, try something else~%"))))
 
 (defstruct score-board
   (alpha 0.0)
@@ -156,9 +161,13 @@
        (game-screen-player-colors it) +colors+)
  (setf (game-screen-scores it) (create-score-board))
  (glaw:shuffle (game-screen-player-colors it))
+ (glaw:with-resources ((snd "music"))
+   (glaw:play-sound snd :loop t :volume 0.3))
  (glaw:add-input-handler it))
 
 (defmethod glaw:shutdown-screen ((it game-screen))
+  (glaw:with-resources ((snd "music"))
+    (glaw:stop-sound snd))
   (glaw:dispose-asset "map-tex")
   (glaw:dispose-asset "hut-tex")
   (glaw:dispose-asset "map-picking")
@@ -241,8 +250,6 @@
 
 (glaw:button-handler (it game-screen) :mouse (:left-button :press)
    (let ((territory (pick-territory (game-screen-territories it) glaw:*mouse-x* glaw:*mouse-y*)))
-     (when territory
-       (format t "Clicked: ~S~%" (territory-index territory)))
      (if (and territory (game-screen-territory it))
          (let ((moved (game-move-huts (game-screen-territory it) territory)))
            (setf (game-screen-territory it) nil)
@@ -258,6 +265,8 @@
                                                      :nb-players (game-screen-nb-players it)))
                  (game-screen-next-player it))))
          (when territory
+           (glaw:with-resources ((snd "click"))
+             (glaw:play-sound snd))
            (setf (game-screen-territory it) territory)))))
 
 (glaw:key-handler (it game-screen) (:space :press)

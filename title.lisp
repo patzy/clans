@@ -40,6 +40,7 @@
 (glaw:key-handler (it title-screen) (:space :press)
    (glaw:push-screen (make-loading-screen
                       :assets '("map-tex" "hut-tex" "map-picking"
+                                "music" "move-ok" "move-error" "click"
                                 "score-font" "hut-font" "player-font")
                       :next-screen (make-game-screen :nb-players (title-screen-nb-players it)))
                      *screens*))

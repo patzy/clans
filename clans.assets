@@ -7,6 +7,10 @@
  (:font :name "hut-font" :file "dejavu-sans-bold.fnt")
  (:texture :name "map-tex" :file "board.png")
  (:texture :name "hut-tex" :file "hut.png")
- (:image :name "map-picking" :file "board_picking.png"))
+ (:image :name "map-picking" :file "board_picking.png")
+ (:sound :name "music" :file "music.wav")
+ (:sound :name "move-ok" :file "success.wav")
+ (:sound :name "move-error" :file "failure.wav")
+ (:sound :name "click" :file "click.wav"))
 
 
