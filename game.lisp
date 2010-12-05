@@ -38,8 +38,8 @@
 (defun map-move-huts (from-ter to-ter)
   (loop for slot in (territory-huts from-ter) do
        (loop for hut in slot do
-            (progn (territory-add-hut to-ter hut)
-                   (territory-remove-hut from-ter hut)))))
+            (territory-add-hut to-ter hut)
+            (territory-remove-hut from-ter hut))))
 
 (defun game-move-possible-p (from-ter to-ter)
   (and (map-can-move (territory-index from-ter) (territory-index to-ter))
@@ -54,8 +54,14 @@
 
 (defstruct score-board
   (alpha 0.0)
-  (scores '(0 0 0 0 0))
+  scores
   (x 800) (y 700))
+
+(defun create-score-board ()
+  (let ((board (make-score-board)))
+    (setf (score-board-scores board)
+          (loop for i below 5 collect 0))
+    board))
 
 (defun score-board-add (board player score)
   (incf (nth player (score-board-scores board)) score))
@@ -81,7 +87,15 @@
   player-colors
   show-player-color
   territory ;; selected territory
-  (scores (make-score-board)))
+  scores)
+
+(defun game-screen-nb-villages (scr)
+  (loop for player-villages in (game-screen-villages scr)
+       when player-villages
+       sum (length player-villages)))
+
+(defun game-screen-game-over-p (scr)
+  (>= (game-screen-nb-villages scr) 12))
 
 (defun game-screen-next-player (scr)
   (incf (game-screen-player scr))
@@ -140,6 +154,7 @@
  (game-screen-place-huts it)
  (setf (game-screen-player it) (glaw:random-between 1 (game-screen-nb-players it))
        (game-screen-player-colors it) +colors+)
+ (setf (game-screen-scores it) (create-score-board))
  (glaw:shuffle (game-screen-player-colors it))
  (glaw:add-input-handler it))
 
@@ -184,20 +199,22 @@
 
 
 (defun game-village-p (territories ter)
-  ;; (format t "Territories neighbors huts: ~S~%"
-  ;;         (loop for ter-index in (nth (territory-index ter) +map-graph+)
-  ;;              collect (territory-nb-huts (nth ter-index territories))))
   (every #'zerop (loop for ter-index in (nth (territory-index ter) +map-graph+)
                     collect (territory-nb-huts (nth ter-index territories)))))
+
+(defun game-village-exists-p (scr ter)
+  (some (lambda (player-villages)
+         (member ter player-villages)) (game-screen-villages scr)))
 
 (defun game-screen-check-villages (scr)
   "Returns a list of all newly created villages."
   (let ((res nil))
     (loop for ter in (game-screen-territories scr)
-       do (when (and (not (member ter (game-screen-villages scr)))
+       do (when (and (not (game-village-exists-p scr ter))
                      (game-village-p (game-screen-territories scr) ter))
             (push ter res)
-            (push ter (game-screen-villages scr))))
+            (push ter (nth (1- (game-screen-player scr))
+                           (game-screen-villages scr)))))
     res))
 
 (defun village-remove-singles (ter)
@@ -224,13 +241,22 @@
 
 (glaw:button-handler (it game-screen) :mouse (:left-button :press)
    (let ((territory (pick-territory (game-screen-territories it) glaw:*mouse-x* glaw:*mouse-y*)))
+     (when territory
+       (format t "Clicked: ~S~%" (territory-index territory)))
      (if (and territory (game-screen-territory it))
-         (progn (game-move-huts (game-screen-territory it) territory)
-                (setf (game-screen-territory it) nil)
-                (let ((villages (game-screen-check-villages it)))
-                  (when villages
-                    (game-screen-update-scores it villages)))
-                (game-screen-next-player it))
+         (let ((moved (game-move-huts (game-screen-territory it) territory)))
+           (setf (game-screen-territory it) nil)
+           (when moved
+             (let ((villages (game-screen-check-villages it)))
+               (when villages
+                 (game-screen-update-scores it villages)))
+             (if (game-screen-game-over-p it)
+                 (glaw:replace-screen *screens*
+                                      (make-instance 'game-over-screen
+                                                     :scores (score-board-scores
+                                                              (game-screen-scores it))
+                                                     :nb-players (game-screen-nb-players it)))
+                 (game-screen-next-player it))))
          (when territory
            (setf (game-screen-territory it) territory)))))
 

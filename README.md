@@ -5,7 +5,7 @@ Computer version of the board game [CLANS](http://en.wikipedia.org/wiki/Clans_(b
 
 Still work in progress:
 
-- no game end for the moment
+- can't restart the game properly
 - no special terrain (bonus/destructive)
 - no extra point for village founder
 - graphics are not finished

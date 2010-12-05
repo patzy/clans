@@ -9,6 +9,7 @@
                (:file "constants")
                (:file "screens")
                (:file "loading")
+               (:file "game-over")
                (:file "game")
                (:file "title")
                (:file "clans")))
