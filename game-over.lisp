@@ -37,16 +37,8 @@
                                 :justify :center)
     (glaw:render-wrapped-string 0 (- (/ *height* 3.0) (glaw:font-line-height fnt))
                                 *width* fnt
-                                "Press SPACE to get back to title screen" :justify :center)))
+                                "Press ESC to get back to title screen" :justify :center)))
 
 
 (defmethod glaw:update-screen ((it game-over-screen) dt)
   (declare (ignore it dt)))
-
-
-;; (glaw:key-handler (it title-screen) (:space :press)
-;;    (glaw:push-screen (make-loading-screen
-;;                       :assets '("map-tex" "hut-tex" "map-picking"
-;;                                 "score-font" "hut-font" "player-font")
-;;                       :next-screen (make-game-screen :nb-players (title-screen-nb-players it)))
-;;                      *screens*))
