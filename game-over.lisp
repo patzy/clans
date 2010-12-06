@@ -8,13 +8,15 @@
 
 (defmethod glaw:init-screen ((it game-over-screen) &key)
   (loop for player below 5
-       when (> player (game-over-screen-nb-players it))
+       when (>= player (game-over-screen-nb-players it))
        do (setf (nth player (game-over-screen-scores it)) 0))
   (setf (game-over-screen-view it) (glaw:create-2d-view 0 0 *width* *height*)
         (game-over-screen-winner it) (loop for score in (game-over-screen-scores it)
-                                          for winner from 1 upto 5
-                                          maximize score
-                                          finally (return winner)))
+                                        for player from 1 upto 5
+                                        with winner = 1 and best-score = 0
+                                        when (> score best-score)
+                                        do (setf winner player)
+                                        finally (return winner)))
   (glaw:add-input-handler it))
 
 (defmethod glaw:resume-screen ((it game-over-screen))
@@ -33,7 +35,7 @@
     (glaw:render-wrapped-string 0 (/ *height* 2.0) *width* fnt
                                 "Game Over" :justify :center)
     (glaw:render-wrapped-string 0 (/ *height* 3.0) *width* fnt
-                                (format nil "Winner: ~S" (game-over-screen-winner it))
+                                (format nil "Winner: player ~S" (game-over-screen-winner it))
                                 :justify :center)
     (glaw:render-wrapped-string 0 (- (/ *height* 3.0) (glaw:font-line-height fnt))
                                 *width* fnt
