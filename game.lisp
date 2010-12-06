@@ -44,7 +44,7 @@
 (defun game-move-possible-p (from-ter to-ter)
   (and (map-can-move (territory-index from-ter) (territory-index to-ter))
        (< (territory-nb-huts from-ter) 7)
-       (not (zerop (territory-nb-huts to-ter)))))
+       (not (zerop (territory-nb-huts from-ter)))))
 
 (defun game-move-huts (from-ter to-ter)
   (if (game-move-possible-p from-ter to-ter)
@@ -144,7 +144,6 @@
                  (setf colors (remove color colors))
                  (unless colors
                    (setf colors +colors+)))))
-
 
 (defmethod glaw:init-screen ((it game-screen) &key)
  (setf (game-screen-view it) (glaw:create-2d-view 0 0 *width* *height*)
