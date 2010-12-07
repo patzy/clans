@@ -6,8 +6,6 @@
 
 (defvar *screens* nil)
 
-;; TODO: integrate this into glaw's navmesh
-;; TODO: This means thinking about navmesh's protocol
 (defparameter +map-graph+
   '((1 2 3) (0 3 4 5) (15 0 3 4) (4 2 1 0) (20 15 5 1 2 3)
     (1 4 20 6 9) (5 7 9) (6 8 9) (7 10 12 26 9) (5 6 7 8 21 25)
@@ -114,6 +112,23 @@
     :plain :mountain :forest :desert :plain
     :desert :forest :mountain :forest :plain
     :plain :desert :desert :forest :mountain))
+
+(defconstant +bonus-types+
+  '(:forest :forest :forest :forest
+    :mountain :mountain :mountain
+    :desert :desert :plain :plain))
+
+(defconstant +bonuses+
+  '(1 1 1 1
+    2 2 2
+    3 3
+    4 4
+    5))
+
+(defconstant +malus-types+
+  '(:mountain :mountain :mountain :mountain
+    :plain :plain :plain
+    :forest :forest :desert :desert))
 
 (defconstant +colors+
   (list (glaw:create-color 1.0 1.0 1.0 1.0)

@@ -3,13 +3,6 @@ Clans
 
 Computer version of the board game [CLANS](http://en.wikipedia.org/wiki/Clans_(board_game))
 
-Still work in progress:
-
-- can't restart the game properly
-- no special terrain (bonus/destructive)
-- no extra point for village founder
-- graphics are not finished
-
 Gameplay
 --------
 

@@ -31,6 +31,9 @@
     (setf (nth slot-index (territory-huts ter))
           (remove hut (nth slot-index (territory-huts ter))))))
 
+(defun territory-remove-all-huts (ter)
+  (setf (territory-huts ter) (loop for i below 5 collect '())))
+
 (defun map-can-move (from-index to-index)
   (let ((neighbors (nth from-index +map-graph+)))
     (find to-index neighbors)))
@@ -167,12 +170,6 @@
 (defmethod glaw:shutdown-screen ((it game-screen))
   (glaw:with-resources ((snd "music"))
     (glaw:stop-sound snd))
-  (glaw:dispose-asset "map-tex")
-  (glaw:dispose-asset "hut-tex")
-  (glaw:dispose-asset "map-picking")
-  (glaw:dispose-asset "hut-font")
-  (glaw:dispose-asset "player-font")
-  (glaw:dispose-asset "score-font")
   (glaw:remove-input-handler it))
 
 (defmethod glaw:update-screen ((it game-screen) dt)
@@ -218,8 +215,12 @@
   "Returns a list of all newly created villages."
   (let ((res nil))
     (loop for ter in (game-screen-territories scr)
+         for ter-index = (territory-index ter)
        do (when (and (not (game-village-exists-p scr ter))
                      (game-village-p (game-screen-territories scr) ter))
+            (when (eq (nth ter-index +map-types+)
+                      (nth (game-screen-nb-villages scr) +malus-types+))
+              (territory-remove-all-huts ter))
             (push ter res)
             (push ter (nth (1- (game-screen-player scr))
                            (game-screen-villages scr)))))
@@ -238,14 +239,19 @@
   (loop for v in villages do
        (let ((remove-singles (and (> (territory-nb-huts v) 5)
                                   (notany #'zerop (loop for slot in (territory-huts v)
-                                                     collect (length slot))))))
+                                                     collect (length slot)))))
+             (ter-index (territory-index v))
+             (bonus-points 0))
          (when remove-singles
            (village-remove-singles v))
+         (when (eq (nth ter-index +map-types+)
+                   (nth (game-screen-nb-villages scr) +bonus-types+))
+           (setf bonus-points (nth (game-screen-nb-villages scr) +bonuses+)))
          (loop for index below 5 do
               (unless (null (nth index (territory-huts v)))
                 (score-board-add (game-screen-scores scr)
                                  index
-                                 (village-score v)))))))
+                                 (+ bonus-points (village-score v))))))))
 
 (glaw:button-handler (it game-screen) :mouse (:left-button :press)
    (let ((territory (pick-territory (game-screen-territories it) glaw:*mouse-x* glaw:*mouse-y*)))
@@ -257,11 +263,15 @@
                (when villages
                  (game-screen-update-scores it villages)))
              (if (game-screen-game-over-p it)
-                 (glaw:replace-screen *screens*
-                                      (make-instance 'game-over-screen
-                                                     :scores (score-board-scores
-                                                              (game-screen-scores it))
-                                                     :nb-players (game-screen-nb-players it)))
+                 (progn
+                   (loop for i below 5
+                        do (score-board-add (game-screen-scores it)
+                                            i (length (nth i (game-screen-villages it)))))
+                   (glaw:replace-screen *screens*
+                                        (make-instance 'game-over-screen
+                                                       :scores (score-board-scores
+                                                                (game-screen-scores it))
+                                                       :nb-players (game-screen-nb-players it))))
                  (game-screen-next-player it))))
          (when territory
            (glaw:with-resources ((snd "click"))
