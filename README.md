@@ -26,8 +26,9 @@ then press SPACE to play. Be sure to choose a player number before you start.
 On the game screen, players scores are displayed in the top-right corner of the screen,
 current player number in the bottom left one.
 Move huts by clicking on the territory to start from then on the destination territory.
-Press SPACE to display current player number in this player's color (be sure to do that
-while other players are not watching !!!).
+Press SPACE to display current game informations: current player's color, bonus and malus terrains.
+Be sure that only the current player is watching when you do this so player's color isn't revealed to
+the others.
 
 Moving huts
 -----------

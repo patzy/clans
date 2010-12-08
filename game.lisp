@@ -197,9 +197,7 @@
   (render (game-screen-scores it))
   (glaw:with-resources ((fnt "player-font"))
     (glaw:select-texture nil)
-    (if (game-screen-show-player-color it)
-        (glaw:set-color (nth (game-screen-player it) (game-screen-player-colors it)))
-        (glaw:set-color #(1.0 1.0 1.0 1.0)))
+    (glaw:set-color #(1.0 1.0 1.0 1.0))
     (glaw:format-at 10 10 fnt "Current player: ~S" (game-screen-player it))))
 
 
@@ -279,7 +277,13 @@
            (setf (game-screen-territory it) territory)))))
 
 (glaw:key-handler (it game-screen) (:space :press)
-   (setf (game-screen-show-player-color it) t))
-
-(glaw:key-handler (it game-screen) (:space :release)
-   (setf (game-screen-show-player-color it) nil))
+   (glaw:push-screen (make-instance 'infos-screen
+                                   :player (game-screen-player it)
+                                   :player-color (nth (game-screen-player it)
+                                                      (game-screen-player-colors it))
+                                   :bonus-terrain (nth (game-screen-nb-villages it) +bonus-types+)
+                                   :malus-terrain (nth (game-screen-nb-villages it) +malus-types+)
+                                   :bonus-points (nth (game-screen-nb-villages it) +bonuses+)
+                                   )
+                     *screens*
+                     :propagate-rendering t))

@@ -10,6 +10,7 @@
                (:file "screens")
                (:file "loading")
                (:file "game-over")
+               (:file "infos")
                (:file "game")
                (:file "title")
                (:file "clans")))
