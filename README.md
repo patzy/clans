@@ -3,6 +3,15 @@ Clans
 
 Computer version of the board game [CLANS](http://en.wikipedia.org/wiki/Clans_(board_game))
 
+Quickstart
+---------
+
+Get [quicklisp](http://www.quicklisp.org), and follow the instructions.
+Clone this repository, get into the created directory, fire up your lisp and do:
+
+    (ql:quickload "clans")
+    (clans:run)
+
 Gameplay
 --------
 
