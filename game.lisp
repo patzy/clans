@@ -162,7 +162,7 @@
  (setf (game-screen-player it) (glaw:random-between 1 (game-screen-nb-players it))
        (game-screen-player-colors it) +colors+)
  (setf (game-screen-scores it) (create-score-board))
- (glaw:shuffle (game-screen-player-colors it))
+ (setf (game-screen-player-colors it) (glaw:shuffle (game-screen-player-colors it)))
  (glaw:with-resources ((snd "music"))
    (glaw:play-sound snd :loop t :volume 0.3))
  (glaw:add-input-handler it))
