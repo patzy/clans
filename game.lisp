@@ -281,6 +281,7 @@
                                    :player (game-screen-player it)
                                    :player-color (nth (game-screen-player it)
                                                       (game-screen-player-colors it))
+                                   :nb-villages (game-screen-nb-villages it)
                                    :bonus-terrain (nth (game-screen-nb-villages it) +bonus-types+)
                                    :malus-terrain (nth (game-screen-nb-villages it) +malus-types+)
                                    :bonus-points (nth (game-screen-nb-villages it) +bonuses+)

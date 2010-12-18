@@ -12,6 +12,7 @@
                      :initarg :background-color)
    (player :reader infos-screen-player :initarg :player)
    (color :reader infos-screen-player-color :initarg :player-color)
+   (nb-villages :reader infos-screen-nb-villages :initarg :nb-villages)
    (bonus-terrain :reader infos-screen-bonus-terrain :initarg :bonus-terrain)
    (malus-terrain :reader infos-screen-malus-terrain :initarg :malus-terrain)
    (bonus-points :reader infos-screen-bonus-points :initarg :bonus-points)))
@@ -49,6 +50,11 @@
                                           (infos-screen-player it))
                                   :justify :left)
       (glaw:set-color #(1.0 1.0 1.0 1.0))
+      (decf current-line line-size)
+      (glaw:render-wrapped-string 10 current-line *width* fnt
+                                  (format nil "Villages so far: ~A"
+                                          (infos-screen-nb-villages it))
+                                  :justify :left)
       (decf current-line line-size)
       (glaw:render-wrapped-string 10 current-line *width* fnt
                                   (format nil "Bonus terrain: ~A (+ ~A pts)"
