@@ -72,7 +72,7 @@
 (defun run ()
   (setf cl-opengl-bindings:*gl-get-proc-address* 'glop:gl-get-proc-address)
   (glop:with-window (win "Clans" 1024 768)
-    (glaw:setup-gl-defaults)
+    (glaw:setup-2d-defaults)
     (glaw:reshape 1024 768)
     (init)
     (let ((last-update-time (get-internal-real-time)))
