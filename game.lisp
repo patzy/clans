@@ -85,7 +85,6 @@
         (decf line-pos (glaw:font-line-height font))))))
 
 (defstruct game-screen
-  (last-fps 0.0)
   view map hut-sprite
   villages ;; created villages per player
   huts ;; all huts
@@ -173,10 +172,7 @@
   (glaw:remove-input-handler it))
 
 (defmethod glaw:update-screen ((it game-screen) dt)
-  (declare (ignore dt))
-  (unless (= (floor (game-screen-last-fps it)) (floor (glaw:current-fps)))
-    ;;(format t "FPS: ~S~%" (glaw:current-fps))
-    (setf (game-screen-last-fps it) (glaw:current-fps))))
+  (declare (ignore it dt)))
 
 (defmethod glaw:render-screen ((it game-screen))
   (glaw:set-view-2d (game-screen-view it))
