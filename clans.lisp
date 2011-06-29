@@ -58,11 +58,10 @@
   (glaw:dispatch-motion-event :mouse dx dy))
 
 (defmethod glop:on-draw (window)
-  (draw window))
+  (declare (ignore window)))
 
 (defmethod glop:on-resize (window w h)
-  (glaw:reshape w h)
-  (draw window))
+  (glaw:reshape w h))
 
 (glaw:key-handler :global (:escape :press)
    (glaw:pop-screen *screens*)
